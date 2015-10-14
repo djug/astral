@@ -1,3 +1,5 @@
+require("./support/function-bind.js");
+var $ = require("jquery");
 describe("the app tag", function(){
   var tag;
   var html;

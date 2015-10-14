@@ -1,11 +1,14 @@
 module.exports = function(config) {
   config.set({
-    frameworks: ['jasmine'],
+    frameworks: ["browserify", "jasmine"],
     files: [
-      'public/js/app.bundle.js',
-      'tests/js/**/*.spec.js'
+      "public/js/app.bundle.js",
+      "tests/js/**/*.spec.js"
     ],
-    browsers: ['PhantomJS'],
-    reporters: ['spec']
+    preprocessors: {
+      "tests/js/**/*.spec.js": ["browserify"]
+    },
+    browsers: ["PhantomJS"],
+    reporters: ["spec"]
   });
 }
