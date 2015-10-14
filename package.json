@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "test": "karma start"
+  },
   "devDependencies": {
     "babel": "^5.8.23",
     "babelify": "^6.3.0",
