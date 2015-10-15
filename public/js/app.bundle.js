@@ -25867,7 +25867,7 @@ this.on("mount", function () {
 
 },{"./starListItem.tag":160,"riot":143,"riotcontrol":144}],160:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}" onclick="{showStarDetails}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" onclick="{parent.stopProp}">View on GitHub</a></div> </div> </li>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}" onclick="{showStarDetails}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" onclick="{parent.openRepoLink}">View on GitHub</a></div> </div> </li>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var _riotcontrol = require("riotcontrol");
 
@@ -25877,7 +25877,7 @@ var _jquery = require("jquery");
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-this.stopProp = function (e) {
+this.openRepoLink = function (e) {
   e.stopPropagation();
   window.open((0, _jquery2["default"])(e.target).attr("href"), "_blank");
 };
