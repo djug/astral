@@ -12162,6 +12162,10 @@ function GithubStore() {
     _this.getGithubStars();
   });
 
+  this.on("readme_requested", function (repo) {
+    _this.getRepoReadme(repo);
+  });
+
   this.getGithubStars = function () {
     var page = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
 
@@ -12192,6 +12196,13 @@ function GithubStore() {
       } else {
         _this.trigger("stars_fetched", _this.stars);
       }
+    });
+  };
+
+  this.getRepoReadme = function (repo) {
+    _superagent2["default"].get("/api/github/repo/" + repo.owner.login + "/" + repo.name + "/readme").end(function (err, res) {
+      var readme = JSON.parse(res.text).readme;
+      _this.trigger("readme_fetched", readme);
     });
   };
 }
@@ -12260,18 +12271,47 @@ require("./dashboardRepoDetails.tag");
 riot.tag('dashboard', '<div class="dashboard"> <dashboard-header ></dashboard-header> <div class="dashboard-main"> <dashboard-sidebar ></dashboard-sidebar> <star-list ></star-list> <dashboard-repo-details ></dashboard-repo-details> </div> </div>', function(opts) {
 });
 
-},{"../stars/starList.tag":21,"./dashboardHeader.tag":16,"./dashboardRepoDetails.tag":17,"./dashboardSidebar.tag":18,"riot":6}],16:[function(require,module,exports){
+},{"../stars/starList.tag":22,"./dashboardHeader.tag":16,"./dashboardRepoDetails.tag":17,"./dashboardSidebar.tag":18,"riot":6}],16:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../dropdown.tag");
-riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img src="/images/avatar-sample.jpg" alt="Collin Henderson" class="user-avatar"> <span class="user-username">syropian</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="/#">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {
+riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img riot-src="{user.avatar_url}" alt="{user.name}" class="user-avatar"> <span class="user-username">{user.username}</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="/#">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {var _this = this;
+
+var ls = require("local-storage");
+
+this.user = {};
+this.on("mount", function () {
+  _this.user = ls("user");
+  _this.update();
+});
 });
 
-},{"../dropdown.tag":19,"riot":6}],17:[function(require,module,exports){
+},{"../dropdown.tag":19,"local-storage":2,"riot":6}],17:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For astralapp/astral</div> <div class="manage-star" hide="{false}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL">Clone:</label> <input type="text" id="txtGitHubCloneURL" value="http://github.com/astralapp/astral" readonly> </div> </div> <div class="readme-loading-overlay" hide="{true}"> <spinner color="#658399"></spinner> </div> <div class="repo-readme syntax"> </div> </div>', function(opts) {
+module.exports = require("../readme.tag");
+riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder" hide="{readme}">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For {star.full_name}</div> <div class="manage-star" show="{Object.keys(star).length}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL">Clone:</label> <input type="text" id="txtGitHubCloneURL" value="{star.ssh_url}" readonly> </div> </div> <div class="readme-loading-overlay" hide="{true}"> <spinner color="#658399"></spinner> </div> <readme class="repo-readme" content="{readme}"></readme> </div>', function(opts) {var _this = this;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riotcontrol = require("riotcontrol");
+
+var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
+
+this.star = {};
+this.readme = "";
+
+_riotcontrol2["default"].on("star_selected", function (star) {
+  _this.star = star;
+  _riotcontrol2["default"].trigger("readme_requested", _this.star);
+  _this.update();
 });
 
-},{"riot":6}],18:[function(require,module,exports){
+_riotcontrol2["default"].on("readme_fetched", function (readme) {
+  _this.readme = readme;
+  _this.update();
+});
+});
+
+},{"../readme.tag":21,"riot":6,"riotcontrol":7}],18:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('dashboard-sidebar', '<div class="dashboard-sidebar"> <div class="dashboard-sidebar-header"> <h3>Astral</h3> </div> <div class="sidebar-header"> <h3 class="sidebar-header-text">Stars</h3> </div> <ul class="dashboard-list sidebar-stars"> <li class="all-stars dashboard-list-item"><i class="fa fa-inbox"></i> All Stars</li> <li class="untagged-stars dashboard-list-item"><i class="fa fa-star-o"></i> Untagged Stars</li> </ul> <div class="sidebar-header tags-header"> <h3 class="sidebar-header-text">Tags</h3> <div class="tag-button-group"> <button class="tag-button-group-item">Add</button> <button class="tag-button-group-item">Edit</button> <button class="tag-button-group-item">Sort</button> </div> </div> <form class="tag-form" ng-show="addingTag" hide="{true}"> <input type="text" name="name" placeholder="Tag name"> <button type="submit">Save</button> </form> <ul class="dashboard-list sidebar-tags"> <li class="dashboard-list-item tag droppable">JavaScript</li> </ul> </div>', function(opts) {
 });
@@ -12295,45 +12335,78 @@ this.on("mount", function () {
 },{"jquery":1,"riot":6}],20:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot = require("riot");
-riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="#" onclick="{authenticate}">Sign In</a> </div> </div>', function(opts) {
+riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="#" onclick="{authenticate}">Sign In</a> </div> </div>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var RiotControl = require("riotcontrol");
+var _riotcontrol = require("riotcontrol");
+
+var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
 
 this.authenticate = function () {
   window.location.href = '/api/auth';
 };
 
-RiotControl.on("user_fetched", function (user) {
+_riotcontrol2["default"].on("user_fetched", function (user) {
   riot.route('#/dashboard');
 });
 
 this.on("mount", function () {
   if (opts.authenticated) {
-    RiotControl.trigger("fetch_user");
+    _riotcontrol2["default"].trigger("fetch_user");
   }
 });
 });
 
 },{"riot":6,"riotcontrol":7}],21:[function(require,module,exports){
 var riot = require('riot');
+module.exports = riot.tag('readme', '<span></span>', function(opts) {var _this = this;
+
+this.on("mount update", function () {
+  _this.root.innerHTML = opts.content;
+});
+});
+
+},{"riot":6}],22:[function(require,module,exports){
+var riot = require('riot');
 module.exports = require("./starListItem.tag");
 riot.tag('star-list', '<div class="dashboard-repos"> <ul class="repos"> <star-list-item stars="{stars}"></star-list-item> </ul> </div>', function(opts) {var _this = this;
 
-var RiotControl = require("riotcontrol");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riotcontrol = require("riotcontrol");
+
+var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
 
 this.stars = [];
-RiotControl.on("stars_fetched", function (stars) {
+_riotcontrol2["default"].on("stars_fetched", function (stars) {
   _this.stars = stars;
   _this.update();
 });
 this.on("mount", function () {
-  RiotControl.trigger("stars_requested");
+  _riotcontrol2["default"].trigger("stars_requested");
 });
 });
 
-},{"./starListItem.tag":22,"riot":6,"riotcontrol":7}],22:[function(require,module,exports){
+},{"./starListItem.tag":23,"riot":6,"riotcontrol":7}],23:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" target="_blank">View on GitHub</a></div> </div> </li>', function(opts) {
+module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}" onclick="{showStarDetails}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" onclick="{parent.stopProp}">View on GitHub</a></div> </div> </li>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riotcontrol = require("riotcontrol");
+
+var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
+
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+this.stopProp = function (e) {
+  e.stopPropagation();
+  window.open((0, _jquery2["default"])(e.target).attr("href"), "_blank");
+};
+
+this.showStarDetails = function (e) {
+  (0, _jquery2["default"])(e.currentTarget).addClass("active").siblings().removeClass("active");
+  _riotcontrol2["default"].trigger("star_selected", e.item);
+};
 });
 
-},{"riot":6}]},{},[11]);
+},{"jquery":1,"riot":6,"riotcontrol":7}]},{},[11]);

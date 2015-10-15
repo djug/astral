@@ -6,7 +6,7 @@ use Cache;
 class GithubClient
 {
 
-  private static $starsCacheExpiry = 30; //minutes
+  private static $starsCacheExpiry = 120; //minutes
   private static $starsPerPage = 50;
 
   public static function getStars($page = 1)

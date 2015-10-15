@@ -6,7 +6,7 @@ require("./starListItem.tag");
     </ul>
   </div>
 
-  var RiotControl = require("riotcontrol");
+  import RiotControl from "riotcontrol";
 
   this.stars = [];
   RiotControl.on("stars_fetched", (stars) => {

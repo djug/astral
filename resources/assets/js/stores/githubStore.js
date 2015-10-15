@@ -12,6 +12,10 @@ function GithubStore() {
     this.getGithubStars();
   });
 
+  this.on("readme_requested", (repo) => {
+    this.getRepoReadme(repo);
+  });
+
   this.getGithubStars = (page=1) => {
     let currentPage = page;
     superagent.get("/api/github/stars?page=" + page).end((err, res) => {
@@ -41,6 +45,14 @@ function GithubStore() {
       }
     });
   }
+
+  this.getRepoReadme = (repo) => {
+    superagent.get(`/api/github/repo/${repo.owner.login}/${repo.name}/readme`).end( (err, res) => {
+      let readme = JSON.parse(res.text).readme;
+      this.trigger("readme_fetched", readme);
+    });
+  }
+
 }
 
 if(typeof(module) !== "undefined") { module.exports = GithubStore; }

@@ -1699,7 +1699,7 @@ tags-input .tags {
     padding: 20px; }
     .repos .repo:hover {
       background: #fcfcfc; }
-    .repos .repo.selected {
+    .repos .repo.active {
       background: #fafafa;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); }
     .repos .repo .repo-name {

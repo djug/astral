@@ -13,7 +13,7 @@ riot = require("riot");
     </div>
   </div>
 
-  var RiotControl = require("riotcontrol");
+  import RiotControl from "riotcontrol";
 
   this.authenticate = () => { window.location.href = '/api/auth'; }
 

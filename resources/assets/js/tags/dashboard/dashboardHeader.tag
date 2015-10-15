@@ -19,8 +19,8 @@ require("../dropdown.tag");
       <i class="fa fa-search"></i>
     </label>
     <div class="user-dropdown-trigger dropdown-trigger">
-      <img src="/images/avatar-sample.jpg" alt="Collin Henderson" class="user-avatar"/>
-      <span class="user-username">syropian</span>
+      <img src="{user.avatar_url}" alt="{user.name}" class="user-avatar"/>
+      <span class="user-username">{user.username}</span>
       <i class="fa fa-chevron-down"></i>
       <dropdown trigger=".user-dropdown-trigger">
         <li><a >Settings</a></li>
@@ -30,4 +30,12 @@ require("../dropdown.tag");
       </dropdown>
     </div>
   </div>
+
+  const ls = require("local-storage");
+
+  this.user = {}
+  this.on("mount", () => {
+    this.user = ls("user");
+    this.update();
+  });
 </dashboard-header>
