@@ -17,7 +17,7 @@ require("../readme.tag");
         <input type="text" id="txtGitHubCloneURL" value="{star.ssh_url}" readonly/>
       </div>
     </div>
-    <div class="readme-loading-overlay" hide={true}>
+    <div class="readme-loading-overlay" show={readmeLoading}>
       <spinner color="#658399"></spinner>
     </div>
     <readme class="repo-readme" content={readme} />
@@ -26,14 +26,17 @@ require("../readme.tag");
   import RiotControl from "riotcontrol";
   this.star = {};
   this.readme = "";
+  this.readmeLoading = false;
 
   RiotControl.on("star_selected", (star) => {
     this.star = star;
+    this.readmeLoading = true;
     RiotControl.trigger("readme_requested", this.star);
     this.update();
   });
 
   RiotControl.on("readme_fetched", (readme) => {
+    this.readmeLoading = false;
     this.readme = readme;
     this.update();
   });
