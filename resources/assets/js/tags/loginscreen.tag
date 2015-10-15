@@ -15,13 +15,9 @@ riot = require("riot");
 
   var RiotControl = require("riotcontrol");
 
-  this.user = {}
   this.authenticate = () => { window.location.href = '/api/auth'; }
 
   RiotControl.on("user_fetched", (user) => {
-    this.user = user;
-    console.log(user);
-    localStorage.setItem("user", JSON.stringify(this.user));
     riot.route('#/dashboard');
   });
 

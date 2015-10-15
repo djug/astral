@@ -1,5 +1,6 @@
 import riot from "riot";
 import superagent from "superagent";
+import ls from "local-storage";
 
 function UserStore() {
   riot.observable(this);
@@ -16,6 +17,7 @@ function UserStore() {
   this.fetchUser = () => {
     superagent.get("/api/auth/user").end((err, res) => {
       this.user = JSON.parse(res.text);
+      ls("user", this.user);
       this.trigger("user_fetched", this.user);
     });
   }
