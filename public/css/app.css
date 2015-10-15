@@ -1954,6 +1954,9 @@ tags-input .tags {
       color: #56a07b; }
       .dashboard-repo-details .repo-readme a:hover {
         text-decoration: none; }
+    .dashboard-repo-details .repo-readme pre {
+      border: 1px solid #eee;
+      padding: 0 0.5em; }
     .dashboard-repo-details .repo-readme p code {
       font-size: 0.9rem; }
     .dashboard-repo-details .repo-readme img {

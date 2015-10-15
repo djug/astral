@@ -358,6 +358,10 @@
       color: $primary;
       &:hover { text-decoration: none; }
     }
+    pre {
+      border: 1px solid #eee;
+      padding: 0 0.5em;
+    }
     p code { font-size: 0.9rem; }
     img {
       max-width: 100%;

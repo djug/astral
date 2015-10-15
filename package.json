@@ -23,6 +23,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "highlight.js": "^8.8.0",
     "jquery": "^2.1.4",
     "local-storage": "^1.4.2",
     "lodash": "^3.10.1",
