@@ -18,13 +18,14 @@ function GithubStore() {
       res = JSON.parse(res.text);
       console.log(res);
       this.stars = res.stars
-      if(res.page_count.length) {this.totalPages = res.page_count;}
+      if(res.page_count) {this.totalPages = res.page_count;}
       if(res.cached) {this.cachedPages = res.cached;}
-      if(this.cachedPages.length && this.cachedPages === this.totalPages) {
+      if(this.cachedPages && this.cachedPages === this.totalPages) {
         this.trigger("stars_fetched", this.stars);
+        return false;
       }
       else {
-        if(this.cachedPages.length){
+        if(this.cachedPages){
           currentPage += 1;
         }
         else {
@@ -33,7 +34,7 @@ function GithubStore() {
       }
       if(currentPage <= this.totalPages) {
         this.trigger("stars_fetched", this.stars);
-        this.getGithubStars(currentPage)
+        this.getGithubStars(currentPage);
       }
       else {
         this.trigger("stars_fetched", this.stars);

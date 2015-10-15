@@ -12033,16 +12033,17 @@ function GithubStore() {
       res = JSON.parse(res.text);
       console.log(res);
       _this.stars = res.stars;
-      if (res.page_count.length) {
+      if (res.page_count) {
         _this.totalPages = res.page_count;
       }
       if (res.cached) {
         _this.cachedPages = res.cached;
       }
-      if (_this.cachedPages.length && _this.cachedPages === _this.totalPages) {
+      if (_this.cachedPages && _this.cachedPages === _this.totalPages) {
         _this.trigger("stars_fetched", _this.stars);
+        return false;
       } else {
-        if (_this.cachedPages.length) {
+        if (_this.cachedPages) {
           currentPage += 1;
         } else {
           currentPage++;
