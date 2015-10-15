@@ -56,7 +56,7 @@ This is the repository for Astral v2. It is currently still in early development
 
 ### Contributing
 
-- [Get up and running](#gettingupandrunning)
+- [Get up and running](#getting-up-and-running)
 - Create a new descriptively named branch
 - Commit your changes and push to your fork
 - Create a pull request with a clear, well written description of what the PR is all about
