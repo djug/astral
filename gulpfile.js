@@ -38,14 +38,14 @@ gulp.task("watch", function(){
   gulp.watch(["resources/assets/sass/**/*.scss"], ["sass"]);
 });
 
-gulp.task("test", ["js"], function (done) {
+gulp.task("test", function (done) {
   return new Server({
     configFile: __dirname + "/karma.conf.js",
     singleRun: true
   }, done).start();
 });
 
-gulp.task("tdd", ["js"], function (done) {
+gulp.task("tdd", function (done) {
   new Server({
     configFile: __dirname + "/karma.conf.js",
   }, done).start();
@@ -53,6 +53,6 @@ gulp.task("tdd", ["js"], function (done) {
 gulp.task("default", [
   "js",
   "sass",
-  // "tdd",
+  "tdd",
   "watch"
 ]);

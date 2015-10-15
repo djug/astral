@@ -4,8 +4,6 @@ import RiotControl from "riotcontrol";
 import GithubStore from "./stores/githubStore.js";
 import "./tags/app.tag";
 
-window.riot = riot;
-
 const githubStore = new GithubStore();
 
 RiotControl.addStore(githubStore);

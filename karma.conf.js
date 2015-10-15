@@ -3,13 +3,15 @@ module.exports = function(config) {
     frameworks: ["browserify", "jasmine"],
     files: [
       "tests/js/support/function-bind.js",
-      "public/js/app.bundle.js",
       "tests/js/**/*.spec.js"
     ],
     preprocessors: {
       "tests/js/**/*.spec.js": ["browserify"]
     },
     browsers: ["PhantomJS"],
-    reporters: ["spec"]
+    reporters: ["spec"],
+    browserify: {
+      transform: [ ["riotify", {type: "es6"}] ]
+    }
   });
 }

@@ -11979,8 +11979,6 @@ var _storesGithubStoreJs2 = _interopRequireDefault(_storesGithubStoreJs);
 
 require("./tags/app.tag");
 
-window.riot = _riot2["default"];
-
 var githubStore = new _storesGithubStoreJs2["default"]();
 
 _riotcontrol2["default"].addStore(githubStore);

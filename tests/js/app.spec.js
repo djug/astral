@@ -1,5 +1,6 @@
 var riot = require("riot");
 var $ = require("jquery");
+var app = require("../../resources/assets/js/tags/app.tag");
 describe("the app tag", function(){
   var tag;
   var html;
@@ -7,7 +8,6 @@ describe("the app tag", function(){
     html = document.createElement("app");
     document.body.appendChild(html);
     tag = riot.mount("app")[0];
-    console.log( tag );
   });
   afterEach(function(){
     tag.unmount();
