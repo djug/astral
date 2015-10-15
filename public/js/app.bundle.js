@@ -11977,22 +11977,29 @@ var _storesGithubStoreJs = require("./stores/githubStore.js");
 
 var _storesGithubStoreJs2 = _interopRequireDefault(_storesGithubStoreJs);
 
+var _storesUserStoreJs = require("./stores/userStore.js");
+
+var _storesUserStoreJs2 = _interopRequireDefault(_storesUserStoreJs);
+
 require("./tags/app.tag");
 
-var githubStore = new _storesGithubStoreJs2["default"]();
+window.riot = _riot2["default"];
 
+var githubStore = new _storesGithubStoreJs2["default"]();
+var userStore = new _storesUserStoreJs2["default"]();
+_riotcontrol2["default"].addStore(userStore);
 _riotcontrol2["default"].addStore(githubStore);
 
 var Route = _riot2["default"].router.Route;
 var DefaultRoute = _riot2["default"].router.DefaultRoute;
 
-_riot2["default"].router.routes([new DefaultRoute({ tag: "login-screen" }), new Route({ path: '/', tag: "login-screen" }), new Route({ path: '/dashboard', tag: "dashboard" })]);
+_riot2["default"].router.routes([new DefaultRoute({ tag: "login-screen" }), new Route({ tag: "login-screen", path: "/auth", api: { authenticated: true } }), new Route({ path: "/dashboard", tag: "dashboard" })]);
 
 _riot2["default"].mount("app");
 
 _riot2["default"].router.start();
 
-},{"./stores/githubStore.js":9,"./tags/app.tag":10,"riot":3,"riot-router":2,"riotcontrol":4}],9:[function(require,module,exports){
+},{"./stores/githubStore.js":9,"./stores/userStore.js":10,"./tags/app.tag":11,"riot":3,"riot-router":2,"riotcontrol":4}],9:[function(require,module,exports){
 "use strict";
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -12003,6 +12010,8 @@ var _riot2 = _interopRequireDefault(_riot);
 
 var _superagent = require("superagent");
 
+var _superagent2 = _interopRequireDefault(_superagent);
+
 function GithubStore() {
   var _this = this;
 
@@ -12012,22 +12021,32 @@ function GithubStore() {
   this.cachedPages = 0;
   this.stars = [];
 
+  this.on("stars_requested", function () {
+    _this.getGithubStars();
+  });
+
   this.getGithubStars = function () {
     var page = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
 
     var currentPage = page;
-    _superagent.superagent.get("/api/github/stars?page=#{page}").end(function (err, res) {
-      _this.stars = res.data.stars;
-      if (res.data.page_count) {
-        _this.totalPages = res.data.page_count;
+    _superagent2["default"].get("/api/github/stars?page=" + page).end(function (err, res) {
+      res = JSON.parse(res.text);
+      console.log(res);
+      _this.stars = res.stars;
+      if (res.page_count.length) {
+        _this.totalPages = res.page_count;
       }
-      if (res.data.cached) {
-        _this.cachedPages = res.data.cached;
+      if (res.cached) {
+        _this.cachedPages = res.cached;
       }
-      if (_this.cachedPages && _this.cachedPages === _this.totalPages) {
+      if (_this.cachedPages.length && _this.cachedPages === _this.totalPages) {
         _this.trigger("stars_fetched", _this.stars);
       } else {
-        currentPage++;
+        if (_this.cachedPages.length) {
+          currentPage += 1;
+        } else {
+          currentPage++;
+        }
       }
       if (currentPage <= _this.totalPages) {
         _this.trigger("stars_fetched", _this.stars);
@@ -12044,13 +12063,52 @@ if (typeof module !== "undefined") {
 }
 
 },{"riot":3,"superagent":5}],10:[function(require,module,exports){
+"use strict";
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riot = require("riot");
+
+var _riot2 = _interopRequireDefault(_riot);
+
+var _superagent = require("superagent");
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
+function UserStore() {
+  var _this = this;
+
+  _riot2["default"].observable(this);
+
+  this.user = {};
+  this.on("user_updated", function (user) {
+    _this.user = user;
+  });
+
+  this.on("fetch_user", function () {
+    _this.fetchUser();
+  });
+
+  this.fetchUser = function () {
+    _superagent2["default"].get("/api/auth/user").end(function (err, res) {
+      _this.user = JSON.parse(res.text);
+      _this.trigger("user_fetched", _this.user);
+    });
+  };
+}
+
+if (typeof module !== "undefined") {
+  module.exports = UserStore;
+}
+
+},{"riot":3,"superagent":5}],11:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("./loginscreen.tag");
 require("./dashboard/dashboard.tag");
 riot.tag('app', '<route ></route>', function(opts) {
 });
 
-},{"./dashboard/dashboard.tag":11,"./loginscreen.tag":16,"riot":3}],11:[function(require,module,exports){
+},{"./dashboard/dashboard.tag":12,"./loginscreen.tag":17,"riot":3}],12:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("./dashboardHeader.tag");
 require("./dashboardSidebar.tag");
@@ -12059,23 +12117,23 @@ require("./dashboardRepoDetails.tag");
 riot.tag('dashboard', '<div class="dashboard"> <dashboard-header ></dashboard-header> <div class="dashboard-main"> <dashboard-sidebar ></dashboard-sidebar> <star-list ></star-list> <dashboard-repo-details ></dashboard-repo-details> </div> </div>', function(opts) {
 });
 
-},{"../stars/starList.tag":17,"./dashboardHeader.tag":12,"./dashboardRepoDetails.tag":13,"./dashboardSidebar.tag":14,"riot":3}],12:[function(require,module,exports){
+},{"../stars/starList.tag":18,"./dashboardHeader.tag":13,"./dashboardRepoDetails.tag":14,"./dashboardSidebar.tag":15,"riot":3}],13:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../dropdown.tag");
 riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img src="/images/avatar-sample.jpg" alt="Collin Henderson" class="user-avatar"> <span class="user-username">syropian</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="/#">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {
 });
 
-},{"../dropdown.tag":15,"riot":3}],13:[function(require,module,exports){
+},{"../dropdown.tag":16,"riot":3}],14:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For astralapp/astral</div> <div class="manage-star" hide="{false}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL">Clone:</label> <input type="text" id="txtGitHubCloneURL" value="http://github.com/astralapp/astral" readonly> </div> </div> <div class="readme-loading-overlay" hide="{true}"> <spinner color="#658399"></spinner> </div> <div class="repo-readme syntax"> </div> </div>', function(opts) {
 });
 
-},{"riot":3}],14:[function(require,module,exports){
+},{"riot":3}],15:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('dashboard-sidebar', '<div class="dashboard-sidebar"> <div class="dashboard-sidebar-header"> <h3>Astral</h3> </div> <div class="sidebar-header"> <h3 class="sidebar-header-text">Stars</h3> </div> <ul class="dashboard-list sidebar-stars"> <li class="all-stars dashboard-list-item"><i class="fa fa-inbox"></i> All Stars</li> <li class="untagged-stars dashboard-list-item"><i class="fa fa-star-o"></i> Untagged Stars</li> </ul> <div class="sidebar-header tags-header"> <h3 class="sidebar-header-text">Tags</h3> <div class="tag-button-group"> <button class="tag-button-group-item">Add</button> <button class="tag-button-group-item">Edit</button> <button class="tag-button-group-item">Sort</button> </div> </div> <form class="tag-form" ng-show="addingTag" hide="{true}"> <input type="text" name="name" placeholder="Tag name"> <button type="submit">Save</button> </form> <ul class="dashboard-list sidebar-tags"> <li class="dashboard-list-item tag droppable">JavaScript</li> </ul> </div>', function(opts) {
 });
 
-},{"riot":3}],15:[function(require,module,exports){
+},{"riot":3}],16:[function(require,module,exports){
 var riot = require('riot');
 module.exports = $ = require("jquery");
 riot.tag('dropdown', '<div class="dropdown"> <ul class="dropdown-list"> <yield ></yield> </ul> </div>', function(opts) {var _this = this;
@@ -12091,20 +12149,52 @@ this.on("mount", function () {
 });
 });
 
-},{"jquery":1,"riot":3}],16:[function(require,module,exports){
+},{"jquery":1,"riot":3}],17:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="/#/dashboard">Sign In</a> </div> </div>', function(opts) {
+module.exports = riot = require("riot");
+riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="#" onclick="{authenticate}">Sign In</a> </div> </div>', function(opts) {var _this = this;
+
+var RiotControl = require("riotcontrol");
+
+this.user = {};
+this.authenticate = function () {
+  window.location.href = '/api/auth';
+};
+
+RiotControl.on("user_fetched", function (user) {
+  _this.user = user;
+  console.log(user);
+  localStorage.setItem("user", JSON.stringify(_this.user));
+  riot.route('#/dashboard');
 });
 
-},{"riot":3}],17:[function(require,module,exports){
+this.on("mount", function () {
+  if (opts.authenticated) {
+    RiotControl.trigger("fetch_user");
+  }
+});
+});
+
+},{"riot":3,"riotcontrol":4}],18:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("./starListItem.tag");
-riot.tag('star-list', '<div class="dashboard-repos"> <ul class="repos"> <star-list-item ></star-list-item> </ul> </div>', function(opts) {
+riot.tag('star-list', '<div class="dashboard-repos"> <ul class="repos"> <star-list-item stars="{stars}"></star-list-item> </ul> </div>', function(opts) {var _this = this;
+
+var RiotControl = require("riotcontrol");
+
+this.stars = [];
+RiotControl.on("stars_fetched", function (stars) {
+  _this.stars = stars;
+  _this.update();
+});
+this.on("mount", function () {
+  RiotControl.trigger("stars_requested");
+});
 });
 
-},{"./starListItem.tag":18,"riot":3}],18:[function(require,module,exports){
+},{"./starListItem.tag":19,"riot":3,"riotcontrol":4}],19:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{new Array(10)}"> <h3 class="repo-name">astralapp/astral</h3> <div class="repo-description">Organize your GitHub stars with ease</div> <ul class="repo-tags" ng-show="star.tags"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> 1337</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> 1337</div> <div class="repo-stat link"><a href="http://github.com/astralapp/astral" target="_blank">View on GitHub</a></div> </div> </li>', function(opts) {
+module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" target="_blank">View on GitHub</a></div> </div> </li>', function(opts) {
 });
 
 },{"riot":3}]},{},[8]);
