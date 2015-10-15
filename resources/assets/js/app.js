@@ -2,8 +2,9 @@ import riot from "riot";
 import * as RiotRouter from "riot-router";
 import RiotControl from "riotcontrol";
 import GithubStore from "./stores/githubStore.js";
-
 import "./tags/app.tag";
+
+window.riot = riot;
 
 const githubStore = new GithubStore();
 

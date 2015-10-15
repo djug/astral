@@ -1,4 +1,4 @@
-require("./support/function-bind.js");
+var riot = require("riot");
 var $ = require("jquery");
 describe("the app tag", function(){
   var tag;
@@ -7,6 +7,7 @@ describe("the app tag", function(){
     html = document.createElement("app");
     document.body.appendChild(html);
     tag = riot.mount("app")[0];
+    console.log( tag );
   });
   afterEach(function(){
     tag.unmount();
