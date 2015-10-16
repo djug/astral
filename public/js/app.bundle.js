@@ -25635,8 +25635,12 @@ function GithubStore() {
 
     var currentPage = page;
     _superagent2["default"].get("/api/github/stars?page=" + page).end(function (err, res) {
+      if (res.error) {
+        if (err.status === 401) {
+          _riot2["default"].route("/");
+        }
+      }
       res = JSON.parse(res.text);
-      console.log(res);
       _this.stars = res.stars;
       if (res.page_count) {
         _this.totalPages = res.page_count;

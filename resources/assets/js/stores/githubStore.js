@@ -19,8 +19,12 @@ function GithubStore() {
   this.getGithubStars = (page=1) => {
     let currentPage = page;
     superagent.get("/api/github/stars?page=" + page).end((err, res) => {
+      if(res.error) {
+        if(err.status === 401) {
+          riot.route("/");
+        }
+      }
       res = JSON.parse(res.text);
-      console.log(res);
       this.stars = res.stars
       if(res.page_count) {this.totalPages = res.page_count;}
       if(res.cached) {this.cachedPages = res.cached;}
