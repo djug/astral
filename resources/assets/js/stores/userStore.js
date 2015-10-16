@@ -6,6 +6,7 @@ function UserStore() {
   riot.observable(this);
 
   this.user = {};
+
   this.on("user_updated", (user) => {
     this.user = user;
   });
@@ -14,8 +15,15 @@ function UserStore() {
     this.fetchUser();
   });
 
+  this.on("user_signed_out", () => {
+    superagent.get("/api/auth/logout").end( (err, res) => {
+      this.user = {};
+      ls.remove("user");
+    });
+  });
+
   this.fetchUser = () => {
-    superagent.get("/api/auth/user").end((err, res) => {
+    superagent.get("/api/auth/user").end( (err, res) => {
       this.user = JSON.parse(res.text);
       ls("user", this.user);
       this.trigger("user_fetched", this.user);

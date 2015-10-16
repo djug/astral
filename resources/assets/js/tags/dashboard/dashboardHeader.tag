@@ -26,14 +26,21 @@ require("../dropdown.tag");
         <li><a >Settings</a></li>
         <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li>
         <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li>
-        <li><a href="/#">Sign Out</a></li>
+        <li><a href="javascript:void(0)" onclick={parent.signOut}>Sign Out</a></li>
       </dropdown>
     </div>
   </div>
 
-  const ls = require("local-storage");
+  import RiotControl from "riotcontrol";
+  import ls from "local-storage";
 
   this.user = {}
+
+  this.signOut = (e) => {
+    RiotControl.trigger("user_signed_out");
+    riot.route("/");
+  }
+
   this.on("mount", () => {
     this.user = ls("user");
     this.update();

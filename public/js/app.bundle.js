@@ -25702,12 +25702,20 @@ function UserStore() {
   _riot2["default"].observable(this);
 
   this.user = {};
+
   this.on("user_updated", function (user) {
     _this.user = user;
   });
 
   this.on("fetch_user", function () {
     _this.fetchUser();
+  });
+
+  this.on("user_signed_out", function () {
+    _superagent2["default"].get("/api/auth/logout").end(function (err, res) {
+      _this.user = {};
+      _localStorage2["default"].remove("user");
+    });
   });
 
   this.fetchUser = function () {
@@ -25742,18 +25750,32 @@ riot.tag('dashboard', '<div class="dashboard"> <dashboard-header ></dashboard-he
 },{"../stars/starList.tag":159,"./dashboardHeader.tag":153,"./dashboardRepoDetails.tag":154,"./dashboardSidebar.tag":155,"riot":143}],153:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../dropdown.tag");
-riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img riot-src="{user.avatar_url}" alt="{user.name}" class="user-avatar"> <span class="user-username">{user.username}</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="/#">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {var _this = this;
+riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img riot-src="{user.avatar_url}" alt="{user.name}" class="user-avatar"> <span class="user-username">{user.username}</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="javascript:void(0)" onclick="{parent.signOut}">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {var _this = this;
 
-var ls = require("local-storage");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riotcontrol = require("riotcontrol");
+
+var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
+
+var _localStorage = require("local-storage");
+
+var _localStorage2 = _interopRequireDefault(_localStorage);
 
 this.user = {};
+
+this.signOut = function (e) {
+  _riotcontrol2["default"].trigger("user_signed_out");
+  riot.route("/");
+};
+
 this.on("mount", function () {
-  _this.user = ls("user");
+  _this.user = (0, _localStorage2["default"])("user");
   _this.update();
 });
 });
 
-},{"../dropdown.tag":156,"local-storage":139,"riot":143}],154:[function(require,module,exports){
+},{"../dropdown.tag":156,"local-storage":139,"riot":143,"riotcontrol":144}],154:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../readme.tag");
 riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder" hide="{readme}">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For {star.full_name}</div> <div class="manage-star" show="{Object.keys(star).length}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL">Clone:</label> <input type="text" id="txtGitHubCloneURL" value="{star.ssh_url}" readonly> </div> </div> <div class="readme-loading-overlay" show="{readmeLoading}"> <spinner color="#658399"></spinner> </div> <readme class="repo-readme" content="{readme}"></readme> </div>', function(opts) {var _this = this;
