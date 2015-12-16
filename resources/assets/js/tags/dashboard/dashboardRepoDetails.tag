@@ -1,4 +1,5 @@
 require("../readme.tag");
+require("../copyfield.tag");
 <dashboard-repo-details>
   <div class="dashboard-repo-details">
     <div class="empty-placeholder" hide={readme}>No Repo Selected</div>
@@ -6,6 +7,7 @@ require("../readme.tag");
     <div class="manage-star" show={Object.keys(star).length}>
       <div class="edit-star-tags">
         <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button>
+        <button class="toggle-tag-editor"><i class="fa fa-sticky-note-o"></i> Edit Notes</button>
         <div class="tags-dropdown" hide={true}>
           <input type="text" value="" placeholder="Tags">
           <button class="save-tags btn-flat">Save Tags</button>
@@ -13,8 +15,8 @@ require("../readme.tag");
       </div>
       <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button>
       <div class="clone-url">
-        <label for="txtGitHubCloneURL">Clone:</label>
-        <input type="text" id="txtGitHubCloneURL" value="{star.ssh_url}" readonly/>
+        <label for="txtGitHubCloneURL" class="copyfield-trigger">Clone:</label>
+        <copyfield value="{star.ssh_url}" id="txtGitHubCloneURL">
       </div>
     </div>
     <div class="readme-loading-overlay" show={readmeLoading}>

@@ -13,12 +13,12 @@
     <div class="sidebar-header tags-header">
       <h3 class="sidebar-header-text">Tags</h3>
       <div class="tag-button-group">
-        <button class="tag-button-group-item">Add</button>
+        <button class="tag-button-group-item" onclick={alertSomething("butts")}>Add</button>
         <button class="tag-button-group-item">Edit</button>
         <button class="tag-button-group-item">Sort</button>
       </div>
     </div>
-    <form class="tag-form" ng-show="addingTag" hide={true}>
+    <form class="tag-form" show={addingTag}>
       <input type="text" name="name" placeholder="Tag name">
       <button type="submit">Save</button>
     </form>
@@ -26,4 +26,21 @@
       <li class="dashboard-list-item tag droppable">JavaScript</li>
     </ul>
   </div>
+
+  this.addingTag = false
+  this.editingTags = false
+  this.sortingTags = false
+
+  this.alertSomething = (foo) => {
+    alert(foo);
+  }
+  this.setAddingTagState = (state) => {
+    this.addingTag = state
+  }
+  this.setEditingTagsState = (state) => {
+    this.editingTags = state
+  }
+  this.setSortingTagsState = (state) => {
+    this.sortingtags = state
+  }
 </dashboard-sidebar>

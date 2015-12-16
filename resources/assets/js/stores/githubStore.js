@@ -1,5 +1,5 @@
 import riot from "riot";
-import superagent from "superagent";
+import request from "superagent";
 
 function GithubStore() {
   riot.observable(this);
@@ -18,7 +18,7 @@ function GithubStore() {
 
   this.getGithubStars = (page=1) => {
     let currentPage = page;
-    superagent.get("/api/github/stars?page=" + page).end((err, res) => {
+    request.get("/api/github/stars?page=" + page).end((err, res) => {
       if(res.error) {
         if(err.status === 401) {
           riot.route("/");
@@ -51,7 +51,7 @@ function GithubStore() {
   }
 
   this.getRepoReadme = (repo) => {
-    superagent.get(`/api/github/repo/${repo.owner.login}/${repo.name}/readme`).end( (err, res) => {
+    request.get(`/api/github/repo/${repo.owner.login}/${repo.name}/readme`).end( (err, res) => {
       let readme = JSON.parse(res.text).readme;
       this.trigger("readme_fetched", readme);
     });
@@ -59,4 +59,4 @@ function GithubStore() {
 
 }
 
-if(typeof(module) !== "undefined") { module.exports = GithubStore; }
+export default GithubStore;

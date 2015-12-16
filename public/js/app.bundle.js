@@ -25574,6 +25574,10 @@ var _riotcontrol = require("riotcontrol");
 
 var _riotcontrol2 = _interopRequireDefault(_riotcontrol);
 
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var _storesGithubStoreJs = require("./stores/githubStore.js");
 
 var _storesGithubStoreJs2 = _interopRequireDefault(_storesGithubStoreJs);
@@ -25583,8 +25587,6 @@ var _storesUserStoreJs = require("./stores/userStore.js");
 var _storesUserStoreJs2 = _interopRequireDefault(_storesUserStoreJs);
 
 require("./tags/app.tag");
-
-window.riot = _riot2["default"];
 
 var githubStore = new _storesGithubStoreJs2["default"]();
 var userStore = new _storesUserStoreJs2["default"]();
@@ -25600,8 +25602,12 @@ _riot2["default"].mount("app");
 
 _riot2["default"].router.start();
 
-},{"./stores/githubStore.js":149,"./stores/userStore.js":150,"./tags/app.tag":151,"riot":143,"riot-router":142,"riotcontrol":144}],149:[function(require,module,exports){
+},{"./stores/githubStore.js":149,"./stores/userStore.js":150,"./tags/app.tag":151,"jquery":138,"riot":143,"riot-router":142,"riotcontrol":144}],149:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -25675,12 +25681,15 @@ function GithubStore() {
   };
 }
 
-if (typeof module !== "undefined") {
-  module.exports = GithubStore;
-}
+exports["default"] = GithubStore;
+module.exports = exports["default"];
 
 },{"riot":143,"superagent":145}],150:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -25727,9 +25736,8 @@ function UserStore() {
   };
 }
 
-if (typeof module !== "undefined") {
-  module.exports = UserStore;
-}
+exports["default"] = UserStore;
+module.exports = exports["default"];
 
 },{"local-storage":139,"riot":143,"superagent":145}],151:[function(require,module,exports){
 var riot = require('riot');
@@ -25738,7 +25746,25 @@ require("./dashboard/dashboard.tag");
 riot.tag('app', '<route ></route>', function(opts) {
 });
 
-},{"./dashboard/dashboard.tag":152,"./loginscreen.tag":157,"riot":143}],152:[function(require,module,exports){
+},{"./dashboard/dashboard.tag":153,"./loginscreen.tag":158,"riot":143}],152:[function(require,module,exports){
+var riot = require('riot');
+module.exports = riot.tag('copyfield', '<input type="text" value="{opts.value}" class="copyfield" readonly>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+this.on("mount", function () {
+  (0, _jquery2["default"])(".copyfield").on("click", function (e) {
+    (0, _jquery2["default"])(e.currentTarget).focus().select();
+  });
+  (0, _jquery2["default"])(".copyfield-trigger").on("click", function (e) {
+    (0, _jquery2["default"])(e.currentTarget).next("copyfield").children(".copyfield").focus().select();
+  });
+});
+});
+
+},{"jquery":138,"riot":143}],153:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("./dashboardHeader.tag");
 require("./dashboardSidebar.tag");
@@ -25747,7 +25773,7 @@ require("./dashboardRepoDetails.tag");
 riot.tag('dashboard', '<div class="dashboard"> <dashboard-header ></dashboard-header> <div class="dashboard-main"> <dashboard-sidebar ></dashboard-sidebar> <star-list ></star-list> <dashboard-repo-details ></dashboard-repo-details> </div> </div>', function(opts) {
 });
 
-},{"../stars/starList.tag":159,"./dashboardHeader.tag":153,"./dashboardRepoDetails.tag":154,"./dashboardSidebar.tag":155,"riot":143}],153:[function(require,module,exports){
+},{"../stars/starList.tag":160,"./dashboardHeader.tag":154,"./dashboardRepoDetails.tag":155,"./dashboardSidebar.tag":156,"riot":143}],154:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../dropdown.tag");
 riot.tag('dashboard-header', '<div class="dashboard-header"> <h2> <span>All Stars</span> </h2> <div class="tag-settings-trigger"> <i class="fa fa-cog"></i> <div class="dropdown" hide="{true}"> <form class="frm-tagname"> <input type="text"> <button class="btn-flat" type="submit">Save</button> </form> <button class="btn-flat btn-danger">Delete Tag</button> </div> </div> <label for="galileo"> <input type="text" id="galileo" class="telescope" placeholder="Gaze through your telescope"> <i class="fa fa-search"></i> </label> <div class="user-dropdown-trigger dropdown-trigger"> <img riot-src="{user.avatar_url}" alt="{user.name}" class="user-avatar"> <span class="user-username">{user.username}</span> <i class="fa fa-chevron-down"></i> <dropdown trigger=".user-dropdown-trigger"> <li><a >Settings</a></li> <li><a href="mailto:hello@astralapp.com">Support &amp; Feedback</a></li> <li><a href="https://gratipay.com/syropian/" target="_blank"><i class="fa fa-heart"></i> Gratipay</a></li> <li><a href="javascript:void(0)" onclick="{parent.signOut}">Sign Out</a></li> </dropdown> </div> </div>', function(opts) {var _this = this;
@@ -25775,10 +25801,11 @@ this.on("mount", function () {
 });
 });
 
-},{"../dropdown.tag":156,"local-storage":139,"riot":143,"riotcontrol":144}],154:[function(require,module,exports){
+},{"../dropdown.tag":157,"local-storage":139,"riot":143,"riotcontrol":144}],155:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("../readme.tag");
-riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder" hide="{readme}">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For {star.full_name}</div> <div class="manage-star" show="{Object.keys(star).length}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL">Clone:</label> <input type="text" id="txtGitHubCloneURL" value="{star.ssh_url}" readonly> </div> </div> <div class="readme-loading-overlay" show="{readmeLoading}"> <spinner color="#658399"></spinner> </div> <readme class="repo-readme" content="{readme}"></readme> </div>', function(opts) {var _this = this;
+require("../copyfield.tag");
+riot.tag('dashboard-repo-details', '<div class="dashboard-repo-details"> <div class="empty-placeholder" hide="{readme}">No Repo Selected</div> <div class="empty-placeholder" hide="{true}">No Readme For {star.full_name}</div> <div class="manage-star" show="{Object.keys(star).length}"> <div class="edit-star-tags"> <button class="toggle-tag-editor"><i class="fa fa-tag"></i> Edit Tags</button> <button class="toggle-tag-editor"><i class="fa fa-sticky-note-o"></i> Edit Notes</button> <div class="tags-dropdown" hide="{true}"> <input type="text" value="" placeholder="Tags"> <button class="save-tags btn-flat">Save Tags</button> </div> </div> <button class="unstar-repo"><i class="fa fa-star-o"></i> Unstar</button> <div class="clone-url"> <label for="txtGitHubCloneURL" class="copyfield-trigger">Clone:</label> <copyfield value="{star.ssh_url}" id="txtGitHubCloneURL"> </div> </div> <div class="readme-loading-overlay" show="{readmeLoading}"> <spinner color="#658399"></spinner> </div> <readme class="repo-readme" content="{readme}"></readme> </div>', function(opts) {var _this = this;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -25804,31 +25831,56 @@ _riotcontrol2["default"].on("readme_fetched", function (readme) {
 });
 });
 
-},{"../readme.tag":158,"riot":143,"riotcontrol":144}],155:[function(require,module,exports){
+},{"../copyfield.tag":152,"../readme.tag":159,"riot":143,"riotcontrol":144}],156:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot.tag('dashboard-sidebar', '<div class="dashboard-sidebar"> <div class="dashboard-sidebar-header"> <h3>Astral</h3> </div> <div class="sidebar-header"> <h3 class="sidebar-header-text">Stars</h3> </div> <ul class="dashboard-list sidebar-stars"> <li class="all-stars dashboard-list-item"><i class="fa fa-inbox"></i> All Stars</li> <li class="untagged-stars dashboard-list-item"><i class="fa fa-star-o"></i> Untagged Stars</li> </ul> <div class="sidebar-header tags-header"> <h3 class="sidebar-header-text">Tags</h3> <div class="tag-button-group"> <button class="tag-button-group-item">Add</button> <button class="tag-button-group-item">Edit</button> <button class="tag-button-group-item">Sort</button> </div> </div> <form class="tag-form" ng-show="addingTag" hide="{true}"> <input type="text" name="name" placeholder="Tag name"> <button type="submit">Save</button> </form> <ul class="dashboard-list sidebar-tags"> <li class="dashboard-list-item tag droppable">JavaScript</li> </ul> </div>', function(opts) {
+module.exports = riot.tag('dashboard-sidebar', '<div class="dashboard-sidebar"> <div class="dashboard-sidebar-header"> <h3>Astral</h3> </div> <div class="sidebar-header"> <h3 class="sidebar-header-text">Stars</h3> </div> <ul class="dashboard-list sidebar-stars"> <li class="all-stars dashboard-list-item"><i class="fa fa-inbox"></i> All Stars</li> <li class="untagged-stars dashboard-list-item"><i class="fa fa-star-o"></i> Untagged Stars</li> </ul> <div class="sidebar-header tags-header"> <h3 class="sidebar-header-text">Tags</h3> <div class="tag-button-group"> <button class="tag-button-group-item" onclick="{alertSomething("butts")}">Add</button> <button class="tag-button-group-item">Edit</button> <button class="tag-button-group-item">Sort</button> </div> </div> <form class="tag-form" show="{addingTag}"> <input type="text" name="name" placeholder="Tag name"> <button type="submit">Save</button> </form> <ul class="dashboard-list sidebar-tags"> <li class="dashboard-list-item tag droppable">JavaScript</li> </ul> </div>', function(opts) {var _this = this;
+
+this.addingTag = false;
+this.editingTags = false;
+this.sortingTags = false;
+
+this.alertSomething = function (foo) {
+  alert(foo);
+};
+this.setAddingTagState = function (state) {
+  _this.addingTag = state;
+};
+this.setEditingTagsState = function (state) {
+  _this.editingTags = state;
+};
+this.setSortingTagsState = function (state) {
+  _this.sortingtags = state;
+};
 });
 
-},{"riot":143}],156:[function(require,module,exports){
+},{"riot":143}],157:[function(require,module,exports){
 var riot = require('riot');
-module.exports = $ = require("jquery");
-riot.tag('dropdown', '<div class="dropdown"> <ul class="dropdown-list"> <yield ></yield> </ul> </div>', function(opts) {var _this = this;
+module.exports = riot.tag('dropdown', '<div class="dropdown"> <ul class="dropdown-list"> <yield ></yield> </ul> </div>', function(opts) {var _this = this;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 this.on("mount", function () {
-  $("html").on("click", function () {
-    $("dropdown").removeClass("active");
+  (0, _jquery2["default"])("html").on("click", function () {
+    (0, _jquery2["default"])("dropdown").removeClass("active");
   });
-  $(opts.trigger).on("click", function (e) {
+  (0, _jquery2["default"])(opts.trigger).on("click", function (e) {
     e.stopPropagation();
-    $(_this.root).toggleClass("active");
+    (0, _jquery2["default"])(_this.root).toggleClass("active");
   });
 });
 });
 
-},{"jquery":138,"riot":143}],157:[function(require,module,exports){
+},{"jquery":138,"riot":143}],158:[function(require,module,exports){
 var riot = require('riot');
-module.exports = riot = require("riot");
-riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="#" onclick="{authenticate}">Sign In</a> </div> </div>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+module.exports = riot.tag('login-screen', '<div class="login-status"> <div class="login-status-wrap" hide="{true}"> <div class="login-status-text"> Signing In </div> <div class="pulser"></div> </div> <div class="login-container"> <img src="images/logo.svg" alt="Astral"> <a class="btn-auth" href="#" onclick="{authenticate}">Sign In</a> </div> </div>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _riot = require("riot");
+
+var _riot2 = _interopRequireDefault(_riot);
 
 var _riotcontrol = require("riotcontrol");
 
@@ -25839,7 +25891,7 @@ this.authenticate = function () {
 };
 
 _riotcontrol2["default"].on("user_fetched", function (user) {
-  riot.route('#/dashboard');
+  _riot2["default"].route('#/dashboard');
 });
 
 this.on("mount", function () {
@@ -25849,7 +25901,7 @@ this.on("mount", function () {
 });
 });
 
-},{"riot":143,"riotcontrol":144}],158:[function(require,module,exports){
+},{"riot":143,"riotcontrol":144}],159:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('readme', '<span></span>', function(opts) {var _this = this;
 
@@ -25873,7 +25925,7 @@ this.on("mount update", function () {
 });
 });
 
-},{"highlight.js":2,"jquery":138,"riot":143}],159:[function(require,module,exports){
+},{"highlight.js":2,"jquery":138,"riot":143}],160:[function(require,module,exports){
 var riot = require('riot');
 module.exports = require("./starListItem.tag");
 riot.tag('star-list', '<div class="dashboard-repos"> <ul class="repos"> <star-list-item stars="{stars}"></star-list-item> </ul> </div>', function(opts) {var _this = this;
@@ -25894,7 +25946,7 @@ this.on("mount", function () {
 });
 });
 
-},{"./starListItem.tag":160,"riot":143,"riotcontrol":144}],160:[function(require,module,exports){
+},{"./starListItem.tag":161,"riot":143,"riotcontrol":144}],161:[function(require,module,exports){
 var riot = require('riot');
 module.exports = riot.tag('star-list-item', '<li class="repo draggable" each="{opts.stars}" onclick="{showStarDetails}"> <h3 class="repo-name">{full_name}</h3> <div class="repo-description">{description}</div> <ul class="repo-tags" show="{true}"> <li each="{new Array(3)}">Foo</li> </ul> <div class="repo-stats"> <div class="repo-stat stars"><i class="fa fa-star"></i> {stargazers_count}</div> <div class="repo-stat forks"><i class="fa fa-code-fork"></i> {forks_count}</div> <div class="repo-stat link"><a href="{html_url}" onclick="{parent.openRepoLink}">View on GitHub</a></div> </div> </li>', function(opts) {function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 

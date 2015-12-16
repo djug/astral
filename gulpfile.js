@@ -53,6 +53,6 @@ gulp.task("tdd", function (done) {
 gulp.task("default", [
   "js",
   "sass",
-  "tdd",
+  // "tdd",
   "watch"
 ]);

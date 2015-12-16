@@ -1,5 +1,5 @@
 import riot from "riot";
-import superagent from "superagent";
+import request from "superagent";
 import ls from "local-storage";
 
 function UserStore() {
@@ -16,14 +16,14 @@ function UserStore() {
   });
 
   this.on("user_signed_out", () => {
-    superagent.get("/api/auth/logout").end( (err, res) => {
+    request.get("/api/auth/logout").end( (err, res) => {
       this.user = {};
       ls.remove("user");
     });
   });
 
   this.fetchUser = () => {
-    superagent.get("/api/auth/user").end( (err, res) => {
+    request.get("/api/auth/user").end( (err, res) => {
       this.user = JSON.parse(res.text);
       ls("user", this.user);
       this.trigger("user_fetched", this.user);
@@ -31,4 +31,4 @@ function UserStore() {
   }
 }
 
-if(typeof(module) !== "undefined"){ module.exports = UserStore; }
+export default UserStore;

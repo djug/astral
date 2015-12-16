@@ -1,4 +1,3 @@
-riot = require("riot");
 <login-screen>
   <div class="login-status">
     <div class="login-status-wrap" hide={true}>
@@ -12,7 +11,7 @@ riot = require("riot");
         <a class="btn-auth" href="#" onclick={authenticate}>Sign In</a>
     </div>
   </div>
-
+  import riot from "riot";
   import RiotControl from "riotcontrol";
 
   this.authenticate = () => { window.location.href = '/api/auth'; }
