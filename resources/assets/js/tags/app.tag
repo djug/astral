@@ -1,5 +1,4 @@
-require("./loginscreen.tag");
-require("./dashboard/dashboard.tag");
+require("./routes.tag");
 <app>
-  <route />
+  <routes />
 </app>

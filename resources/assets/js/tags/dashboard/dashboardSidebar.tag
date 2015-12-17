@@ -13,7 +13,7 @@
     <div class="sidebar-header tags-header">
       <h3 class="sidebar-header-text">Tags</h3>
       <div class="tag-button-group">
-        <button class="tag-button-group-item" onclick={alertSomething("butts")}>Add</button>
+        <button class="tag-button-group-item" onclick={doSomething}>Add</button>
         <button class="tag-button-group-item">Edit</button>
         <button class="tag-button-group-item">Sort</button>
       </div>
@@ -31,9 +31,6 @@
   this.editingTags = false
   this.sortingTags = false
 
-  this.alertSomething = (foo) => {
-    alert(foo);
-  }
   this.setAddingTagState = (state) => {
     this.addingTag = state
   }

@@ -17,7 +17,13 @@
   this.authenticate = () => { window.location.href = '/api/auth'; }
 
   RiotControl.on("user_fetched", (user) => {
-    riot.route('#/dashboard');
+    if( Object.keys(user).length ){
+      window.location = "/dashboard";
+    }
+    else {
+      window.location = "/";
+    }
+
   });
 
   this.on("mount", () => {

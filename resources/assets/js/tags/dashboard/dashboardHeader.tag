@@ -38,7 +38,7 @@ require("../dropdown.tag");
 
   this.signOut = (e) => {
     RiotControl.trigger("user_signed_out");
-    riot.route("/");
+    window.location = "/";
   }
 
   this.on("mount", () => {
