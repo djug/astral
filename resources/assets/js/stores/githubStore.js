@@ -8,11 +8,11 @@ function GithubStore() {
   this.cachedPages = 0;
   this.stars = [];
 
-  this.on("stars_requested", () => {
+  this.on("request:stars", () => {
     this.getGithubStars();
   });
 
-  this.on("readme_requested", (repo) => {
+  this.on("request:readme", (repo) => {
     this.getRepoReadme(repo);
   });
 
@@ -21,7 +21,7 @@ function GithubStore() {
     request.get("/api/github/stars?page=" + page).end((err, res) => {
       if(res.error) {
         if(err.status === 401) {
-          riot.route("/");
+          window.location("/");
         }
       }
       res = JSON.parse(res.text);

@@ -16,7 +16,6 @@ class GithubController extends Controller
     if( \Auth::check() ){
       $page = (int)$request->input('page', 1);
       $stars = \GithubClient::getStars($page);
-      // dd($stars);
       return \Response::json($stars, 200);
     }
     else {

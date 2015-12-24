@@ -33,7 +33,7 @@ require("../copyfield.tag");
   RiotControl.on("star_selected", (star) => {
     this.star = star;
     this.readmeLoading = true;
-    RiotControl.trigger("readme_requested", this.star);
+    RiotControl.trigger("request:readme", this.star);
     this.update();
   });
 

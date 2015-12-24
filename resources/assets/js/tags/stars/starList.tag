@@ -14,6 +14,6 @@ require("./starListItem.tag");
     this.update();
   });
   this.on("mount", () => {
-    RiotControl.trigger("stars_requested");
+    RiotControl.trigger("request:stars");
   });
 </star-list>

@@ -22,7 +22,7 @@ class GithubClient
         $cachedStars = Cache::get($cacheKey);
         $uniqueStars = array_map("unserialize", array_unique(array_map("serialize", $cachedStars['stars'])));
         $cachedStars['stars'] = $uniqueStars;
-        // Add a "cached" key so we can check on the front-end whether we should paginate or not. We set it to the number of pages currently cached, so we fetch only what we need in subsequent reqeusts
+        // Add a "cached" key so we can check on the front-end whether we should paginate or not. We set it to the number of pages currently cached, so we fetch only what we need in subsequent requests
         $cachedPages = count($cachedStars['stars']);
         $cachedStars['cached'] = (int)ceil($cachedPages / self::$starsPerPage);
         return $cachedStars;
