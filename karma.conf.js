@@ -2,7 +2,7 @@ module.exports = function(config) {
   config.set({
     frameworks: ["browserify", "jasmine"],
     files: [
-      "tests/js/support/function-bind.js",
+      "tests/js/support/*.js",
       "tests/js/**/*.spec.js"
     ],
     preprocessors: {
@@ -11,7 +11,7 @@ module.exports = function(config) {
     browsers: ["PhantomJS"],
     reporters: ["spec"],
     browserify: {
-      transform: ["babelify", "vueify"]
+      transform: [["babelify", {presets: ["es2015"]}], "vueify"]
     }
   });
 }

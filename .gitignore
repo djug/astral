@@ -1,8 +1,11 @@
 /vendor
 /node_modules
+/public/**/*.map
 Homestead.yaml
 Homestead.json
 .env
 .sass-cache
 .DS_Store
 .idea
+
+*.cache

@@ -2,67 +2,16 @@ var gulp = require("gulp");
 var sass = require("gulp-sass");
 var autoprefixer = require("gulp-autoprefixer");
 var notify = require("gulp-notify");
-var uglify = require("gulp-uglify");
-var sourcemaps = require("gulp-sourcemaps");
-var browserify = require("browserify");
-var watchify = require("watchify");
-var babelify = require("babelify");
-var vueify = require("vueify");
-var source = require("vinyl-source-stream");
-var buffer = require("vinyl-buffer");
 var Server = require("karma").Server;
 var bourbon = require("node-bourbon");
-var assign = require("lodash/assign");
+var elixir = require("laravel-elixir");
+var vueify = require('laravel-elixir-vueify');
 
-var browserifyArgs = {
-  debug: true,
-  entries: "./resources/assets/js/app.js",
-  transform: [
-    ["babelify", {
-      extensions: [".js"]
-    }],
-    "vueify"
-  ]
-}
-
-var watchifyArgs = assign(watchify.args, browserifyArgs);
-var bundler = watchify(browserify(watchifyArgs));
-
-function scripts(){
-  console.log("Bundling started...");
-  console.time("Bundling finished");
-  return bundler
-    .bundle()
-    .on("end", function(){ console.timeEnd("Bundling finished") })
-    .pipe(source("app.bundle.js"))
-    .pipe(buffer())
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .pipe(sourcemaps.write("../maps"))
-    .pipe(gulp.dest("./public/js"))
-    .pipe(notify("JS Build Complete!"));
-}
-
-bundler.on("update", scripts);
-gulp.task("js", scripts);
-
-gulp.task("sass", function(){
-  gulp.src("resources/assets/sass/app.scss")
-    .pipe(sass({
-      includePaths: require("node-bourbon").includePaths,
-      quiet: true
-    }).on("error", notify.onError(function (error) {
-        return "Build Failed: " + error.message;
-    })))
-    .pipe(autoprefixer({
-      browsers: ["last 2 versions"]
-    }))
-    .pipe(gulp.dest("./public/css"));
-});
-
-
-gulp.task("watch", function(){
-  gulp.watch(["resources/assets/sass/**/*.scss"], ["sass"]);
+elixir(function(mix) {
+    mix
+    .browserify("app.js", "./public/js/app.bundle.js")
+    .sass("app.scss", null, { includePaths: require("node-bourbon").includePaths, quiet: true})
+    .version(["js/app.bundle.js", "css/app.css"]);
 });
 
 gulp.task("test", function (done) {
@@ -73,12 +22,7 @@ gulp.task("test", function (done) {
 });
 
 gulp.task("tdd", function (done) {
-  new Server({
+  return new Server({
     configFile: __dirname + "/karma.conf.js",
   }, done).start();
 });
-gulp.task("default", [
-  "js",
-  "sass",
-  "watch"
-]);
